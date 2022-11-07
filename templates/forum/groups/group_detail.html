@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ group.title }}{% endblock title%}
+
+{% block content %}
+<section class="p-5 bg-light">
+    <h2>{{ group.title }}</h2>
+    {% if request.user.is_authenticated %}
+        {% if request.user not in group.members.all %}
+            <span>You are not a member of this group.</span>
+            <!-- Join/Leave Button -->
+            <a id="join" href="#" data-id="{{ group.id }}" data-action="join">
+                <span>Join</span>
+            </a>
+            <!-- End Join/Leave Button -->
+        {% else %}
+            <span>You are already a member of this group.</span>
+            <!-- Join/Leave Button -->
+            <a id="join" href="#" data-id="{{ group.id }}" data-action="leave">
+                <span>Leave</span>
+            </a>
+            <!-- End Join/Leave Button -->
+        {% endif %}
+    {% else %}
+        <p>Sign in to join this group!</p>
+    {% endif %}
+</section>
+<div class="p-5">
+    <h3 class="pb-2 border-bottom">{{ object_list.count }} posts</h3>
+    {% if object_list %}
+        <ul class="list-group">
+            {% for post in object_list %}
+                <li class="list-group-item">
+                    <h4><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h4>
+                    <span class="text-muted"><strong>{{ post.author }} - {{ post.created|timesince }} ago</strong>  {{ post.body }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts to display</p>
+    {% endif %}
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(document).ready(function(){
+        $('#join').click(function(e){
+            e.preventDefault();
+            console.log('group-join')
+            $.post('{% url "forum:group_join" %}',
+            {
+                id: $(this).data('id'),
+                action: $(this).data('action')
+            },
+            function(data){
+                if (data['status'] == 'ok') 
+                {
+                    var previous_action = $('#join').data('action');
+                    // update data-action in asset
+                    $('#join').data('action', previous_action == 'join' ? 'leave' : 'join');
+                    // update link text in asset
+                    $('#join span').text(previous_action == 'join' ? 'Leave' : 'Join');
+                }
+            }
+        );
+        });
+    });
+</script>
+{% endblock script %}

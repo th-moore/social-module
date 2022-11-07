@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ post.title }}{% endblock title%}
+
+{% block content %}
+<section class="p-5 bg-light">
+    <h2>{{ post.title }}</h2>
+    <span>{{ post.author }}</span>
+    {% if request.user.is_authenticated %}
+        {% if request.user == post.author %}
+            <a class="text-muted" href="{% url 'forum:post_update' post=post.slug %}">Edit</a>
+            <a class="text-muted" href="{% url 'forum:post_delete' post=post.slug %}">Delete</a>
+        {% endif %}
+    {% endif %}
+</section>
+<div class="p-5">
+    <p>{{ post.body }}</p>
+</div>
+<div class="p-5">
+    <h3 class="pb-2 border-bottom">{{ comments.count }} comments</h3>
+    <!-- Comments List -->
+    <ul class="pb-5 list-group">
+        {% for comment in comments %}
+            <li class="list-group-item">
+                <span><stron>{{ comment.body|linebreaks }}</stron></span>
+                <span class="text-muted">{{ comment.author }} - {{ comment.created|timesince }} ago</span>
+            </li>
+        {% empty %}
+            <p>There are no comments yet.</p>
+        {% endfor %}
+    </ul>
+    <!-- End Comments List -->
+    <!-- Post Comment -->
+    {% if user.is_authenticated %}
+        {% if new_comment %}
+            <h3>Your comment has been added.</h3>
+        {% else %}
+            <h3 class="pb-2 border-bottom">Add a new comment</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ comment_form|crispy }}
+                <div class="media align-items-center mb-6">
+                        <p class="mb-0 text-muted">post comment as {{ request.user.username }}</p>
+                </div>
+                <input class="btn btn-sm btn-primary" type="submit" value="Add comment">
+            </form>
+        {% endif %}
+    {% else %}
+        <h3>Please <a href="{% url 'account_login' %}">login</a> to add a comment.</h3>
+    {% endif %}
+<!-- End Post Comment -->
+</div>
+{% endblock content %}

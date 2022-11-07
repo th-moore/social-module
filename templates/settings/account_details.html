@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Account details{% endblock title%}
+
+{% block content %}
+<section class="px-5 pt-5 bg-light">
+    <h2>Settings</h2>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'settings:account_details' %}">Account details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'settings:notifications' %}">Notifications</a>
+        </li>
+    </ul>
+</section>
+<div class="p-5">
+    <div class="row border-top">
+        <div class="col-4 py-3">Email</div>
+        <div class="col-8 py-3">
+            <span class="text-dark">{{ user.email }}</span>
+        </div>
+    </div>
+    <div class="row border-top">
+        <div class="col-4 py-3">Password</div>
+        <div class="col-8 py-3">
+            <a href="{% url 'password_change' %}">Update password</a>
+        </div>
+    </div>
+    <div class="row border-top">
+        <div class="col-4 py-3">Last login</div>
+        <div class="col-8 py-3">
+            <span class="text-dark">{{ user.last_login }}</span>
+        </div>
+    </div>
+    <div class="row border-top">
+        <div class="col-4 py-3">Date joined</div>
+        <div class="col-8 py-3">
+            <span class="text-dark">{{ user.date_joined }}</span>
+        </div>
+    </div>
+</div>
+{% endblock content %}

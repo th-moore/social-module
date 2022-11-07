@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock title%}
+
+{% block content %}
+<section class="p-5 bg-light">
+    <h2>{{ post.title }}</h2>
+    <span>{{ post.author }}</span>
+</section>
+<div class="p-5">
+    <h3 class="pb-2 border-bottom">Delete post</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Are you sure you want to delete <strong>{{ post.title }}</strong>?</p>
+        <p>All comments and upvotes to this post will also be deleted. This action cannot be undone.</p>
+        <!-- Button Group -->
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-white mr-2" href="{{ post.get_absolute_url }}">Cancel</a>
+            <input class="btn btn-danger" type="submit" value="Delete">
+        </div>
+        <!-- End Button Group -->
+    </form>
+</div>
+{% endblock content %}
