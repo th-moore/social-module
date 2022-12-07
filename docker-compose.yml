@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    dev:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./:/code/
+        ports:
+            - "8000:8000"

@@ -15,21 +15,36 @@
     </ul>
 </section>
 <div class="p-5">
-    <div class="pb-5">
-        <h3 class="pb-2 border-bottom">Email subscriptions</h3>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="eventSwitch">
-            <label class="form-check-label" for="eventSwitch">Event digest: Monthly update of posts in topics you have followed</label>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="pb-5">
+            <h3 class="pb-2 border-bottom">Email subscriptions</h3>
+            <div class="form-check form-switch">
+                {{ form.event_switch }}
+                <label class="form-check-label" for="event_switch">Event digest: Monthly update of posts in topics you have followed</label>
+            </div>
+            <div class="form-check form-switch">
+                {{ form.group_switch }}
+                <label class="form-check-label" for="group_switch">Group digest: Weekly review of posts in groups you have joined</label>
+            </div>
         </div>
+        <h3 class="pb-2 border-bottom">Site notifications</h3>
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="groupSwitch">
-            <label class="form-check-label" for="groupSwitch">Group digest: Weekly review of posts in groups you have joined</label>
+            {{ form.reply_switch }}
+            <label class="form-check-label" for="reply_switch">Replies: Email notifications of replies to your posts</label>
         </div>
-    </div>
-    <h3 class="pb-2 border-bottom">Site notifications</h3>
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="replySwitch">
-        <label class="form-check-label" for="replySwitch">Replies: Email notifications of replies to your posts</label>
-    </div>
+        <div>
+            <input class="btn btn-success" type="submit" value="Save notification settings">
+        </div>
+        {% if messages %}
+        <div>
+            {% for message in messages %}
+            <div>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </form>
 </div>
 {% endblock content %}
